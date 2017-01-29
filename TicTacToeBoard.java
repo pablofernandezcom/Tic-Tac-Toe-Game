@@ -1,32 +1,45 @@
 /**
  * 
- * @author tmaule
+ * 
  *This is the TicTacToe Board class, which provides a 'playing field' and is
  *initialized by TicTacToe Game. 
  *
  */
+
+package tictactoe2;
+
 public class TicTacToeBoard {
 	
-	/*
+    	/*
 	 * Below are public variables, an integer and an array of
 	 * areas, to provide a representation of the game board and
 	 * its size, respectively.
 	 */
-	char[][] board;
+    
 	static int size = 3;
+        public char[][] board;
+        public static final String ANSI_RESET = "\u001B[0m";
+        public static final String ANSI_BLACK = "\u001B[30m";
+        public static final String ANSI_RED = "\u001B[31m";
+        public static final String ANSI_GREEN = "\u001B[32m";
+        public static final String ANSI_YELLOW = "\u001B[33m";
+        public static final String ANSI_BLUE = "\u001B[34m";
+        public static final String ANSI_PURPLE = "\u001B[35m";
+        public static final String ANSI_CYAN = "\u001B[36m";
+        public static final String ANSI_WHITE = "\u001B[37m";
 
 	/**
 	 * This exception is thrown when the user or computer
-	 * tries to mark a spot that is already taken. It simply
-	 * prints out "That space is taken"
+	 * tries to mark a spot that is already taken. 
 	 * @author tmaule
 	 *
 	 */
-	public class SpaceTakenException extends Exception {
+        
+        public class SpaceTakenException extends Exception {
 		private static final long serialVersionUID = 1L;
 		}
 	
-	/**
+        /**
 	 * This method takes no parameters and returns nothing; 
 	 * it simply creates an array of arrays, with dimensions
 	 * three by three, and fills it with space characters.
@@ -40,20 +53,26 @@ public class TicTacToeBoard {
 			}
 		
 	}
-	
-	
+
 	/**
 	 * Called for side effects alone, printboard() takes
 	 * no parameters and simply prints the tictactoe board
 	 * by printing a variety of strings, and iterating 
 	 * through the matrix. 
 	 */
+        
 	public void printBoard(){
-		String seperator = "+---+---+---+";
-		System.out.println("\n"+seperator);
-		String line;
+            	String topguide   = "      1   2   3  ";
+		String seperator  = "    +---+---+---+";
+                System.out.println("\n" + topguide);
+		System.out.println(seperator);
+                String line = "";
 		for (int i=0; i<3; i++){
-			line = "| ";
+                    
+                        if(i==0) { line =  "R " + (i+1) + " | "; }
+                        if(i==1) { line =  "O " + (i+1) + " | "; }
+                        if(i==2) { line =  "W " + (i+1) + " | "; }
+
 			for (int j=0; j<3; j++){
 				line = line + this.board[i][j];
 				line = line + " | ";
@@ -63,8 +82,8 @@ public class TicTacToeBoard {
 		}
 		System.out.println("\n");
 	}
-
-	/**
+	
+    	/**
 	 * Checks if a space is open. Parameters are row,
 	 * an integer, column, an integer. Returns 'true' 
 	 * if the integers are between 0 and 2, and 
@@ -73,15 +92,15 @@ public class TicTacToeBoard {
 	 * @param column
 	 * @return
 	 */
+        
 	public boolean isOpen(int row, int column){
 		if ((row > 3) || (column > 3)){
 			return false;
 		}
 		return ' ' == this.board[row][column];
 	}
-	
-	
-	/**
+    
+        /**
 	 * Marks a space.
 	 * It checks if the space is within bounds, and if not returns 'false' so 
 	 * that the human or computer picks another row/column pair. Next, it
@@ -96,10 +115,10 @@ public class TicTacToeBoard {
 	 */
 	public boolean markSpace(int row, int column, char mark) throws SpaceTakenException{
 		if ((row>3)||(column>3)){
-			System.out.println("Out of bounds!");
+			System.out.println(ANSI_RED + "Out of bounds!" + ANSI_RESET);
 			return false;
 		} else if (board[row][column]!=' '){
-			System.out.println("That space is taken!");
+			//System.out.println(ANSI_RED + "SpaceTaken threw an exception here" + ANSI_RESET);
 			throw new SpaceTakenException();
 		} else {
 		board[row][column] = mark;
@@ -107,7 +126,7 @@ public class TicTacToeBoard {
 		return true;
 	}
 	
-	/**
+        /**
 	 * Checks to see if the game is tied, and 
 	 * returns true if no spaces are unmarked.
 	 * @return
@@ -123,8 +142,7 @@ public class TicTacToeBoard {
 		return true;
 	}
 	
-	
-	/**
+        /**
 	 * Checks to see if a given player has won.
 	 * Parameter: mark, 'x' or 'o', the mark of the player who may have won
 	 * Returns true if the player with the given mark has won.
@@ -132,12 +150,14 @@ public class TicTacToeBoard {
 	 * @param mark
 	 * @return
 	 */
+        
 	public boolean isWonBy(char mark){
 		for (int i=0; i <size; i++){
 			char[] row={' ',' ',' '};
 			for (int j=0; j<size; j++){
 				row[j] = board[i][j];
 			}
+			//System.out.println("Row we're checking: " + row[0] + row[1] + row[2]);
 			if (match(row, mark)){
 				return true;
 				}
@@ -148,6 +168,7 @@ public class TicTacToeBoard {
 			for (int j=0;j<size;j++){
 				column[j] = board[j][i];
 			}
+			//System.out.println("Column we're checking: " + column[0] + column[1] + column[2]);
 			if (match(column, mark)){
 				return true;
 				}
@@ -166,7 +187,7 @@ public class TicTacToeBoard {
 		return false;
 	}
 	
-	/**
+        /**
 	 * Returns true if the given list contains only the given mark
 	 * Parameters include: spaces, a list of characters; mark, a 
 	 * character to match
@@ -174,7 +195,8 @@ public class TicTacToeBoard {
 	 * @param mark
 	 * @return
 	 */
-	public static boolean match(char[] spaces, char mark){
+        
+	public boolean match(char[] spaces, char mark){
 		for (int s = 0; s < 3; s++){
 			if (spaces[s]!= mark){
 				return false;
@@ -183,7 +205,7 @@ public class TicTacToeBoard {
 		return true;
 	}
 	
-	/**
+        /**
 	 * Unused main statement, since this class is not meant to be run alone,
 	 * only through TicTacToeGame.java
 	 * @param args
