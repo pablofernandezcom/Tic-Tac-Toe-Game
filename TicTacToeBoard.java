@@ -5,19 +5,22 @@
  *initialized by TicTacToe Game. 
  *
  */
-
 package tictactoe2;
 
+/**
+ * 
+ * @author tmaule
+ * @author pfernandez
+ */
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class TicTacToeBoard {
-	
-    	/*
-	 * Below are public variables, an integer and an array of
-	 * areas, to provide a representation of the game board and
-	 * its size, respectively.
-	 */
     
 	static int size = 3;
         public char[][] board;
+        
         public static final String ANSI_RESET = "\u001B[0m";
         public static final String ANSI_BLACK = "\u001B[30m";
         public static final String ANSI_RED = "\u001B[31m";
@@ -99,14 +102,17 @@ public class TicTacToeBoard {
 		}
 		return ' ' == this.board[row][column];
 	}
-    
-        /**
+        
+         /**
 	 * Marks a space.
 	 * It checks if the space is within bounds, and if not returns 'false' so 
 	 * that the human or computer picks another row/column pair. Next, it
 	 * checks if the space indicated is taken, and throws a SpaceTakenException
 	 * if it is. Otherwise, the method marks the indicated space with the 
 	 * symbol for the current player ('X' or '0')
+         * 
+         * If on impossible mode, the AI will override any moves if a defense
+         * is necessary or a win is possible with the current board state. 
 	 * @param row
 	 * @param column
 	 * @param mark
@@ -114,18 +120,34 @@ public class TicTacToeBoard {
 	 * @throws SpaceTakenException
 	 */
 	public boolean markSpace(int row, int column, char mark) throws SpaceTakenException{
+		if (TicTacToeGame.difficulty==2 && mark=='0'){
+			//System.out.println("checking 2");
+			if (!nearlyWonBy('X').isEmpty()){
+				//System.out.println(nearlyWonBy('X'));
+				row = nearlyWonBy('X').get(0);
+				column = nearlyWonBy('X').get(1);
+			}
+			if (!nearlyWonBy('0').isEmpty()){
+				//System.out.println(nearlyWonBy('0'));
+				row = nearlyWonBy('0').get(0);
+				column = nearlyWonBy('0').get(1);
+			}		
+		}
 		if ((row>3)||(column>3)){
-			System.out.println(ANSI_RED + "Out of bounds!" + ANSI_RESET);
+			System.out.println("Out of bounds!");
 			return false;
 		} else if (board[row][column]!=' '){
-			//System.out.println(ANSI_RED + "SpaceTaken threw an exception here" + ANSI_RESET);
+			System.out.println("SpaceTaken throw an exception here");
 			throw new SpaceTakenException();
 		} else {
 		board[row][column] = mark;
 		}
+		if (mark=='0'){System.out.println("\033[0;1m" + "The computer marks (" + 
+				(row+1) + "," + (column+1) + ")");}
 		return true;
 	}
 	
+       
         /**
 	 * Checks to see if the game is tied, and 
 	 * returns true if no spaces are unmarked.
@@ -149,8 +171,7 @@ public class TicTacToeBoard {
 	 * Checks for vertical, horizontal, and diagonal 'wins.'
 	 * @param mark
 	 * @return
-	 */
-        
+	 */    
 	public boolean isWonBy(char mark){
 		for (int i=0; i <size; i++){
 			char[] row={' ',' ',' '};
@@ -186,8 +207,8 @@ public class TicTacToeBoard {
 		
 		return false;
 	}
-	
-        /**
+        
+     /**
 	 * Returns true if the given list contains only the given mark
 	 * Parameters include: spaces, a list of characters; mark, a 
 	 * character to match
@@ -204,7 +225,88 @@ public class TicTacToeBoard {
 		}
 		return true;
 	}
-	
+    	
+        /**
+	* Checks to see if a given player is one move away from victory
+	* Parameter: mark, 'x' or 'o', the mark of the player who may win
+	* Returns an List of integers that indicate possible wins
+	* for every pair of integers from n=0, if 2n is a row, 2n+1 is the
+        * corresponding column
+	* Checks for vertical, horizontal, and diagonal 'wins.'
+	* @param mark
+	* @return
+	*/    
+	public List<Integer> nearlyWonBy(char mark){
+			int count;
+			List<Integer> locations = new ArrayList<Integer>();		
+			for (int i=0; i <3; i++){
+				count = 0;
+				for (int j=0; j<3; j++){
+					if (board[i][j] == mark) {count++;}
+				}
+				if (count == 2){
+					//System.out.print("2!");
+
+					for (int j=0; j<3; j++){
+						if (board[i][j] == ' ') {
+							locations.add(i);
+							locations.add(j);
+						}
+					}
+				}
+			}
+			
+			for (int i=0; i <3; i++){
+				count = 0;
+				for (int j=0;j<3;j++){
+					if (board[j][i] == mark) {count++;}
+				}
+				if (count == 2){
+					//System.out.print("2!");
+
+					for (int j=0; j<3; j++){
+						if (board[j][i] == ' ') {
+							locations.add(j);
+							locations.add(i);
+						}
+					}
+				}
+			}
+			
+			count = 0;
+			for (int i=0; i<3; i++){
+				if (board[i][i]==mark){count++;}
+			}
+			if (count == 2){
+				//System.out.print("2!");
+				for (int j=0; j<3; j++){
+					if (board[j][j] == ' ') {
+						locations.add(j);
+						locations.add(j);
+					}
+				}
+			}
+			
+			count = 0;
+			for (int i=0; i<3; i++){
+				if (board[2-i][i]==mark){count++;}
+			}
+			if (count == 2){
+				//System.out.print("2!");
+
+				for (int j=0; j<3; j++){
+					if (board[2-j][j] == ' ') {
+						locations.add(2-j);
+						locations.add(j);
+					}
+				}
+			}
+			
+			//System.out.println(mark + " "+locations);
+			return locations;
+		}
+	    
+	    
         /**
 	 * Unused main statement, since this class is not meant to be run alone,
 	 * only through TicTacToeGame.java

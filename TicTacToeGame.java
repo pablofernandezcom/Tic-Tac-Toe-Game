@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tictactoe2;
 
 import java.util.InputMismatchException;
@@ -18,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class TicTacToeGame  {
     
     static Scanner reader = new Scanner(System.in);
-    public int difficulty = 0; // 0 = default, 1 = easy, 2 = hard
+    public static int difficulty = 0; // 0 = default, 1 = easy, 2 = hard
     private Scanner diff; // difficulty
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -54,7 +49,7 @@ public class TicTacToeGame  {
                 System.out.print(ANSI_PURPLE + "--------------------------------------------------\n" + ANSI_RESET);
 
             } else if (difficulty==2){
-                System.out.print("You go first on difficult mode. \n"); 
+                System.out.print("You go first on Artificial Intelligence mode. \n"); 
                 System.out.print(ANSI_PURPLE + "--------------------------------------------------\n" + ANSI_RESET);
             }
         }
@@ -65,7 +60,7 @@ public class TicTacToeGame  {
                 System.out.print(ANSI_PURPLE + "--------------------------------------------------\n" + ANSI_RESET);
 
             } else if (difficulty==2){
-                System.out.print("The computer goes first on difficult mode. \n");
+                System.out.print("The computer goes first on Artificial Intelligence mode. \n");
                 System.out.print(ANSI_PURPLE + "--------------------------------------------------\n" + ANSI_RESET);
             }
         }         
@@ -79,9 +74,17 @@ public class TicTacToeGame  {
         
         while(true) {
             if(isHumanTurn) {
+                if (board.isTied()){
+                    System.out.println(ANSI_RED + "It's a tie!" + ANSI_RESET);
+                    break;
+                }
                 humanTurn(board);
             }
             else {                
+                if (board.isTied()){
+                    System.out.println(ANSI_RED + "It's a tie!" + ANSI_RESET);
+                    break;
+                }
                 if (difficulty==1){    
                     computer.computerTurnEasy(board);
             	} else if (difficulty==2){
@@ -91,16 +94,16 @@ public class TicTacToeGame  {
             board.printBoard();
             if (isHumanTurn){
             	if (board.isWonBy('X')){
-            	System.out.println(ANSI_GREEN + "The human has won!");
+            	System.out.println(ANSI_GREEN + "The human has won!" + ANSI_RESET);
             	break;
             	}
             } else if (!isHumanTurn){
             	if (board.isWonBy('0')){
-            	System.out.println(ANSI_RED + "The computer has won!");
+            	System.out.println(ANSI_RED + "The computer has won!" + ANSI_RESET);
             	break;
             	}
             } else if (board.isTied()){
-            	System.out.println(ANSI_BLUE + "It's a tie!");
+            	System.out.println(ANSI_BLUE + "It's a tie!" + ANSI_RESET);
                 break;
             }
             isHumanTurn = !isHumanTurn;
@@ -168,7 +171,7 @@ public class TicTacToeGame  {
      * and accordingly modifies the public variable "difficulty"
      */
     public void askLevel(){
-    	System.out.print("Which level of difficulty? (1 = Easy, 2 = Hard): ");
+    	System.out.print("Which level of difficulty? (1 = Easy, 2 = Impossible): ");
     	while (difficulty != 1 && difficulty != 2){
         	diff = new Scanner(System.in);
         	difficulty = diff.nextInt();

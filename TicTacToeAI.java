@@ -1,11 +1,14 @@
 package tictactoe2;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author pablofernandez
+ * 
+ * @author tmaule
+ * @author pfernandez
  */
+
     /**
      * The computer randomly selects two integers, representing row and column. Afterwards, the computer tests if 
      * the spot is open. If so, it will mark a '0' there. Otherwise, it will throw a SpaceTakenException, and
@@ -40,35 +43,7 @@ public class TicTacToeAI {
         int row;
     	int column;
         int [] heuristic = {-1,1};
-        List<Integer> nearwins;
-       
-        /*
-        // Check to see if any winning moves available for computer 
-        nearwins = nearlyWonBy("O", board);
-        for (int[] move : nearwins) {
-            row = move[0];
-            column = move[1];
-            if(board.isOpen(row, column)) {
-                heuristic[0]=row;
-                heuristic[1]=column;
-                return heuristic; 
-            }            
-        }            
-
-        // Check to see if any defense blocks available for computer 
-        nearwins = nearlyWonBy("X", board);
-        for (int[] move : nearwins) {
-            row = move[0];
-            column = move[1];
-            if(board.isOpen(row, column)) {
-                heuristic[0]=row;
-                heuristic[1]=column;
-                return heuristic; 
-            }            
-        }            
-        */
-        
-        //No win or defense is available, so resort to the next best move
+               
         for (int[] move : preferredMoves) {
             row = move[0];
             column = move[1];
@@ -80,7 +55,8 @@ public class TicTacToeAI {
             }   
         }
         
-        //No win, defense, or preferred move is available. Resort to random. 
+        
+        //No preferred move is available. Resort to random. 
         row    = (int)(Math.random()*3);
         column = (int)(Math.random()*3);
         heuristic[0] =row; 
@@ -104,8 +80,9 @@ public class TicTacToeAI {
             column = move[1];
             
             try {
-            	board.markSpace(row, column, '0');
-                System.out.println("\033[0;1m" + "The computer marks (" + Integer.toString(row+1) +","+ Integer.toString(column+1)+").");
+                // The function markSpace can overide this move based on win and loss analysis
+                board.markSpace(row, column, '0');
+                //System.out.println("\033[0;1m" + "The computer marks (" + Integer.toString(row+1) +","+ Integer.toString(column+1)+").");
                 return;
             } catch (TicTacToeBoard.SpaceTakenException e){
             } 
@@ -123,7 +100,7 @@ public class TicTacToeAI {
         int column;
         
         while(true){
-            boolean useheuristic = (Math.random() < 0.6);
+            boolean useheuristic = (Math.random() < 0.4); // Only use skilled moves 4/10 times
             if(useheuristic)
             {
                 move = BestMovesHeuristic(board);
@@ -138,7 +115,7 @@ public class TicTacToeAI {
             
             try {
             	board.markSpace(row, column, '0');
-                System.out.println("\033[0;1m" + "The computer marks (" + Integer.toString(row+1) +","+ Integer.toString(column+1)+")." );
+                //System.out.println("\033[0;1m" + "The computer marks (" + Integer.toString(row+1) +","+ Integer.toString(column+1)+")." );
                 return;
             } catch (TicTacToeBoard.SpaceTakenException e){
             } 
