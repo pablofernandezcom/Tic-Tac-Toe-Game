@@ -8,7 +8,6 @@ import java.util.List;
  * @author tmaule
  * @author pfernandez
  */
-
     /**
      * The computer randomly selects two integers, representing row and column. Afterwards, the computer tests if 
      * the spot is open. If so, it will mark a '0' there. Otherwise, it will throw a SpaceTakenException, and
